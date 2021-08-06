@@ -11,42 +11,42 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PatientController : ControllerBase
+    public class VaccinationController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public PatientController(IUnitOfWork unitOfWork, IMapper mapper)
+        public VaccinationController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
         [HttpGet]
         [Route("GetById")]
-        public PatientResponse GetById(int PatientId)
+        public VaccinationResponse GetById(int VaccinationId)
         {
             try
             {
-                var PatientDb = _unitOfWork.Patients.GetByIdInclude(PatientId);
+                var VaccinationDb = _unitOfWork.Vaccinations.GetById(VaccinationId);
 
-                if (PatientDb == null)
-                    return new PatientResponse
+                if (VaccinationDb == null)
+                    return new VaccinationResponse
                     {
                         Data = null,
                         Code = 404,
-                        Message = "Patient Not Found"
+                        Message = "Vaccination Not Found"
 
                     };
-                return new PatientResponse
+                return new VaccinationResponse
                 {
-                    Data = _mapper.Map<Patient, PatientData>(PatientDb),
+                    Data = _mapper.Map<Vaccination, VaccinationData>(VaccinationDb),
                     Code = 200,
-                    Message = "Patient Has been Found"
+                    Message = "Vaccination Has been Found"
 
                 };
             }
             catch (Exception ex)
             {
-                return new PatientResponse
+                return new VaccinationResponse
                 {
                     Data = null,
                     Code = 500,
@@ -55,35 +55,33 @@ namespace WebApi.Controllers
                 };
             }
         }
-   
-       
         [HttpGet]
         [Route("GetAll")]
-        public PatientsResponse GetAll()
+        public VaccinationsResponse GetAll()
         {
             try
             {
-                var PatientDb = _unitOfWork.Patients.GetAllPatientsWithVaccinationHistory();
+                var VaccinationDb = _unitOfWork.Vaccinations.GetAllVaccinations();
 
-                if (PatientDb == null)
-                    return new PatientsResponse
+                if (VaccinationDb == null)
+                    return new VaccinationsResponse
                     {
                         Data = null,
                         Code = 404,
-                        Message = "No Patients Yet"
+                        Message = "No Vaccinations Yet"
 
                     };
-                return new PatientsResponse
+                return new VaccinationsResponse
                 {
-                    Data = _mapper.Map<IEnumerable<Patient>, List<PatientData>>(PatientDb),
+                    Data = _mapper.Map<IEnumerable<Vaccination>, List<VaccinationData>>(VaccinationDb),
                     Code = 200,
-                    Message = "Patients Has been Loaded"
+                    Message = "Vaccinations Has been Loaded"
 
                 };
             }
             catch (Exception ex)
             {
-                return new PatientsResponse
+                return new VaccinationsResponse
                 {
                     Data = null,
                     Code = 500,
@@ -94,19 +92,21 @@ namespace WebApi.Controllers
         }
         [HttpPost]
         [Route("Add")]
-        public BaseResponse Add([CustomizeValidator(RuleSet = "PatientRule")] PatientRequest req)
+        public BaseResponse Add([CustomizeValidator(RuleSet = "VaccinationRule")] VaccinationRequest req)
         {
             try
             {
-                var patient = _mapper.Map<PatientRequest, Patient>(req);
+                var Vaccination = _mapper.Map<VaccinationRequest, Vaccination>(req);
+                var PatientDb = _unitOfWork.Patients.GetById(req.PatientId);
+                PatientDb.VaccinationStatus = true;
 
-                _unitOfWork.Patients.Add(patient);
-
+                _unitOfWork.Vaccinations.Add(Vaccination);
                 _unitOfWork.Complete();
+
                 return new BaseResponse
                 {
                     Code = 200,
-                    Message = "Patient Added Successfully"
+                    Message = "Vaccination Added Successfully"
 
                 };
             }
@@ -123,26 +123,26 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public BaseResponse Update(int PatientId, PatientRequest req)
+        public BaseResponse Update(int VaccinationId, VaccinationRequest req)
         {
             try
             {
-                var PatientDb = _unitOfWork.Patients.GetById(PatientId);
-                if (PatientDb == null)
+                var VaccinationDb = _unitOfWork.Vaccinations.GetById(VaccinationId);
+                if (VaccinationDb == null)
                     return new BaseResponse
                     {
                         Code = 404,
-                        Message = "Patient Not Found"
+                        Message = "Vaccination Not Found"
 
                     };
-                _mapper.Map<PatientRequest, Patient>(req, PatientDb);
+                _mapper.Map<VaccinationRequest, Vaccination>(req, VaccinationDb);
 
                 _unitOfWork.Complete();
 
                 return new BaseResponse
                 {
                     Code = 200,
-                    Message = "Patient Updated Successfully"
+                    Message = "Vaccination Updated Successfully"
 
                 };
             }
@@ -159,23 +159,23 @@ namespace WebApi.Controllers
 
         [HttpDelete]
         [Route("Delete")]
-        public BaseResponse Delete(int PatientId)
+        public BaseResponse Delete(int VaccinationId)
         {
             try
             {
-                var PatientDb = _unitOfWork.Patients.GetById(PatientId);
-                if (PatientDb == null)
+                var VaccinationDb = _unitOfWork.Vaccinations.GetById(VaccinationId);
+                if (VaccinationDb == null)
                     return new BaseResponse
                     {
                         Code = 402,
-                        Message = "Patient Not Found"
+                        Message = "Vaccination Not Found"
                     };
-                _unitOfWork.Patients.Remove(PatientDb);
+                _unitOfWork.Vaccinations.Remove(VaccinationDb);
                 _unitOfWork.Complete();
                 return new BaseResponse
                 {
                     Code = 200,
-                    Message = "Patient deleted Successfully"
+                    Message = "Vaccination deleted Successfully"
 
                 };
             }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Microsoft.EntityFrameworkCore;
 namespace CovidVaccination.Repositories
 {
     public class VaccinationRepository : GenericRepository<Vaccination>, IVaccinationRepository
@@ -12,9 +12,9 @@ namespace CovidVaccination.Repositories
         public VaccinationRepository(ApplicationContext context) : base(context)
         {
         }
-        public IEnumerable<Vaccination> GetPopularVaccinations(int count)
+        public IEnumerable<Vaccination> GetAllVaccinations()
         {
-            return _context.Vaccinations.OrderByDescending(d => d.Followers).Take(count).ToList();
+            return _context.Vaccinations.Include(x=>x.Patient);
         }
     }
 }

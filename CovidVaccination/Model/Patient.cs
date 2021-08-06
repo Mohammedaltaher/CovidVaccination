@@ -21,6 +21,6 @@ namespace CovidVaccination.Model
         public Gender Gender { get; set; }
         public bool VaccinationStatus { get; set; }
 
-
+        public virtual ICollection<Vaccination> Vaccinations { get; set; }
     }
 }

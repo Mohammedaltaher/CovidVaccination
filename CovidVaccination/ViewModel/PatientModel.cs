@@ -20,7 +20,14 @@ namespace CovidVaccination.ViewModel
     public class PatientData : PatientRequest
     {
         public DateTime DateOfRegistration { get; set; }
+        public bool VaccinationStatus { get; set; }
+        public IEnumerable<PatientVaccination> Vaccinations { get; set; }
 
+    }
+    public class PatientVaccination 
+    {
+        public DateTime Date { get; set; }
+        public string VaccinationName { get; set; }
     }
     public class PatientResponse : BaseResponse
     {
@@ -37,21 +44,12 @@ namespace CovidVaccination.ViewModel
         public PatientRequestValidator()
         {
            
-            RuleSet("Name", () =>
+            RuleSet("PatientRule", () =>
             {
                 RuleFor(x => x.Name).NotNull().WithMessage("Name could not be null");
-            });
-            RuleSet("Address", () =>
-            {
                 RuleFor(x => x.Address).NotNull().WithMessage("Address could not be null");
-            });
-            RuleSet("Email", () =>
-            {
                 RuleFor(x => x.Email).NotNull().WithMessage("Email could not be null");
                 RuleFor(x => x.Email).EmailAddress().WithMessage("Email is not valid");
-            });
-            RuleSet("DateOfBirth", () =>
-            {
                 RuleFor(x => x.DateOfBirth).NotNull().WithMessage("Date Of Birth could not be null");
                 RuleFor(x => x.DateOfBirth).Must(BeAValidDate).WithMessage("Date Of Birth  is not valid Date");
             });

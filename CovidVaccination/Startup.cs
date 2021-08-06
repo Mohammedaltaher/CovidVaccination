@@ -50,8 +50,9 @@ namespace CovidVaccination
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             #region Auto Mapper Configurations  
-            var mappingConfig = new MapperConfiguration(mc => {
-                mc.AddProfile(new PatientProfile());
+            var mappingConfig = new MapperConfiguration(mc => { 
+                mc.AddProfile(new VaccinationProfile());
+                mc.AddProfile(new PatientProfile());    
             });
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
@@ -61,7 +62,7 @@ namespace CovidVaccination
             services.AddControllersWithViews().AddFluentValidation();
             services.AddTransient<IValidator<PatientRequest>, PatientRequestValidator>();
             #endregion
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CovidVaccination", Version = "v1" });

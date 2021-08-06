@@ -7,6 +7,6 @@ namespace CovidVaccination.Interfaces
 {
     public interface IVaccinationRepository : IGenericRepository<Vaccination>
     {
-        IEnumerable<Vaccination> GetPopularVaccinations(int count);
+        public IEnumerable<Vaccination> GetAllVaccinations();
     }
 }

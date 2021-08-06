@@ -4,14 +4,16 @@ using CovidVaccination.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CovidVaccination.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210806160302_updatePatient")]
+    partial class updatePatient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,34 +64,15 @@ namespace CovidVaccination.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Followers")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
-
                     b.ToTable("Vaccinations");
-                });
-
-            modelBuilder.Entity("CovidVaccination.Model.Vaccination", b =>
-                {
-                    b.HasOne("CovidVaccination.Model.Patient", "Patient")
-                        .WithMany("Vaccinations")
-                        .HasForeignKey("PatientId");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("CovidVaccination.Model.Patient", b =>
-                {
-                    b.Navigation("Vaccinations");
                 });
 #pragma warning restore 612, 618
         }

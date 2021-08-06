@@ -4,14 +4,16 @@ using CovidVaccination.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CovidVaccination.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210806165030_addVaccination")]
+    partial class addVaccination
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,10 +49,15 @@ namespace CovidVaccination.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PatientId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("VaccinationStatus")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Patients");
                 });
@@ -68,7 +75,7 @@ namespace CovidVaccination.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PatientId")
+                    b.Property<int>("PatientId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -78,18 +85,27 @@ namespace CovidVaccination.Migrations
                     b.ToTable("Vaccinations");
                 });
 
+            modelBuilder.Entity("CovidVaccination.Model.Patient", b =>
+                {
+                    b.HasOne("CovidVaccination.Model.Patient", null)
+                        .WithMany("Patients")
+                        .HasForeignKey("PatientId");
+                });
+
             modelBuilder.Entity("CovidVaccination.Model.Vaccination", b =>
                 {
                     b.HasOne("CovidVaccination.Model.Patient", "Patient")
-                        .WithMany("Vaccinations")
-                        .HasForeignKey("PatientId");
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("CovidVaccination.Model.Patient", b =>
                 {
-                    b.Navigation("Vaccinations");
+                    b.Navigation("Patients");
                 });
 #pragma warning restore 612, 618
         }

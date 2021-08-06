@@ -7,5 +7,8 @@ namespace CovidVaccination.Interfaces
 {
     public interface IPatientRepository : IGenericRepository<Patient>
     {
+        public IEnumerable<Patient> GetAllPatientsWithVaccinationHistory();
+        public Patient GetByIdInclude(int Id);
     }
+
 }

@@ -12,9 +12,12 @@ namespace CovidVaccination.Map
     {
         public PatientProfile()
         {
-           
+
+            CreateMap<Vaccination, PatientVaccination>()
+                .ForMember(dest => dest.VaccinationName, opt => opt.MapFrom(src => src.Name));
             CreateMap<PatientRequest, Patient>();
-            CreateMap<Patient, PatientData>();
+            CreateMap<Patient, PatientData>()
+                 .ForMember(dest => dest.Vaccinations, opt => opt.MapFrom(src => src.Vaccinations)); ;
             CreateMap<Patient, PatientResponse>();
 
         }
